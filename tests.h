@@ -105,8 +105,10 @@ inline float _time()
 	return FAILURE;				\
     }
 
+#ifndef SAFE_DELETE
 #define SAFE_DELETE(x)				\
     if(x)					\
     { delete x; x = 0; }
+#endif
 
 #endif/*__TLMM_TESTS_H__*/
