@@ -8,6 +8,8 @@ enum Response
     TIMEOUT,
 };
 
+extern const char* g_testError;
+
 class _Test
 {
 public:
@@ -72,13 +74,13 @@ inline float _time()
 #endif
 
 #define TEST(x, grp, time, init, cleanup, test, data)	\
-    class x : public _Test				\
+    class grp##x : public _Test				\
     {							\
     private:						\
 	struct _data data;				\
 	_data m_data;					\
     public:						\
-	x() { Add(#x, #grp, time); }			\
+	grp##x() { Add(#x, #grp, time); }			\
 	void Init() {init}				\
 	void Cleanup() {cleanup}			\
 	Response Test(float& t)				\
@@ -96,12 +98,13 @@ inline float _time()
 	    return SUCCESS;				\
 	}						\
     };          					\
-    x _##x;
+    grp##x _##grp##x;
 
 #define ASSERT(x)				\
     if(!(x))					\
     {						\
 	t = _time() - start;			\
+    g_testError = #x; \
 	return FAILURE;				\
     }
 

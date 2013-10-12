@@ -17,6 +17,8 @@ SYSTEMTIME tv_start;
 struct timeval tv_start;
 #endif
 
+const char* g_testError;
+
 void _Test::Add(const char* name, const char* group, float time)
 {
     if(s_Tests == 0)
@@ -42,7 +44,7 @@ void _Test::Add(const char* name, const char* group, float time)
 	    {
 		grp = &s_Tests[i];
 		grp->name = new char[strlen(group) + 1];
-		sprintf(grp->name, group);
+		sprintf(grp->name,"%s",  group);
 		grp->tests = new _test[TEST_MAX_TEST];
 		for(int j = 0; j < TEST_MAX_TEST; ++j)
 		{
@@ -69,7 +71,7 @@ void _Test::Add(const char* name, const char* group, float time)
 	if(!grp->tests[i].name)
 	{
 	    grp->tests[i].name = new char[strlen(name)+1];
-	    sprintf(grp->tests[i].name, name);
+	    sprintf(grp->tests[i].name, "%s", name);
 	    grp->tests[i].test = this;
 	    grp->tests[i].time = time;
 	    return;
@@ -125,7 +127,7 @@ void _Test::RunTest(_test* test, _result* res, int runs)
 	break;
     case FAILURE:
 	res->fail++;
-	printf("\tFAILURE\n");
+	printf("\tFAILURE\t%s\n", g_testError);
 	break;
     }
     test->test->Cleanup();
