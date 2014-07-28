@@ -8,8 +8,6 @@ enum Response
     TIMEOUT,
 };
 
-extern const char* g_testError;
-
 class _Test
 {
 public:
@@ -100,18 +98,22 @@ inline float _time()
     };          					\
     grp##x _##grp##x;
 
+#include <string>
+extern std::string g_assertFail;
+
+#define STR_VALUE(x) #x
+#define TO_STRING(x) STR_VALUE(x)
+
 #define ASSERT(x)				\
     if(!(x))					\
     {						\
 	t = _time() - start;			\
-    g_testError = #x; \
+    g_assertFail = TO_STRING(x) " (" __FILE__ ":" TO_STRING(__LINE__) ")"; \
 	return FAILURE;				\
     }
 
-#ifndef SAFE_DELETE
 #define SAFE_DELETE(x)				\
     if(x)					\
     { delete x; x = 0; }
-#endif
 
 #endif/*__TLMM_TESTS_H__*/
