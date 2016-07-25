@@ -188,9 +188,28 @@ void _Test::RunTests(const char* group, int runs)
 }
 
 #include <stdlib.h>
+#include <string>
+#include <unistd.h>
+#include <limits.h>
+
+using std::string;
+
+string ParentDirectory(const string& path)
+{
+    size_t pos = path.find_last_of("\\/");
+    return (std::string::npos == pos)
+         ? ""
+        : path.substr(0, pos);
+}
 
 int main(int argc, char** argv)
 {
+    string path(argv[0]);
+    char prevDir[PATH_MAX];
+    getcwd(prevDir, PATH_MAX);
+    string dir = ParentDirectory(path);
+    chdir(dir.c_str());
+
 #ifdef WIN32
 	GetSystemTime(&tv_start);
 #else
@@ -212,4 +231,6 @@ int main(int argc, char** argv)
     
     if(runAll)
 	_Test::RunTests(0, num);
+    
+    chdir(prevDir);
 }
